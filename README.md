@@ -7,7 +7,7 @@
 - Upload test results.
 
 ## [Original readme](https://github.com/leVirve/lsun-room)
-## [Original paper]()
+## [Original paper](https://github.com/shuuchen/lsun-room-dsc/blob/master/layout_lin.pdf)
 ## Usage
 - Install libraries according to [requirements](https://github.com/shuuchen/lsun-room-dsc/blob/master/requirements.txt).
 - Download dataset from http://lsun.cs.princeton.edu/2015.html#layout and put them in following folders.
