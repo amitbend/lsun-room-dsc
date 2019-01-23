@@ -2,6 +2,10 @@
 
 ![one_lsun_result_banner](./doc/banner.png)
 
+## TODO
+- Upload trained model.
+- Upload test results.
+
 ## [Original readme](https://github.com/leVirve/lsun-room)
 ## [Original paper]()
 ## Usage
