@@ -6,19 +6,20 @@
 ## [Original paper]()
 ## Usage
 - Download dataset from http://lsun.cs.princeton.edu/2015.html#layout and put them in following folders.
-- Dataset
+- Datasets preparation
 
   - Put `LSUN Room Layout Dataset` in folder `../data/lsun_room` relative to this project.
     - `images/`: RGB color image `*.jpg` of indoor room scene
     - `layout_seg/`: layout ground truth `*.mat` of indoor room scene
     - `layout_seg_images/`: generated layout ground truth `*.png` of indoor room scene
-  - Run the following to prepare train/evaluation data.
+  - Run the following to prepare train/evaluation datasets.
     ```bash
     python re_label.py
     ```
   
 - Training
   - The trained model will be saved to folder ./exp/checkpoints/
+  - You can modify config.yml to play with hyperparameters for training.
   
   ```bash
   python main.py --phase train --name train
@@ -41,16 +42,19 @@
 - Prediction
   - Specify the weight path of a trained model.
   - The weight path should be a file named as net-xx.pt
+  - --input_path/--output_path point to the folders of input/output images
+  
   ```bash
-  python demo.py --weight [weight_path]
+  python demo.py --weight [weight_path] --input_path [input_image_dir] --output_path [output_image_dir]
 
   Usage: demo.py [OPTIONS]
 
   Options:
-    --device INTEGER
-    --video TEXT
-    --weight TEXT
-    --input_size <INTEGER INTEGER>.
+    --input_path PATH
+    --output_path PATH
+    --weight PATH
+    --input_size <INTEGER INTEGER>...
+    --help                          Show this message and exit.
 
   ```
 
