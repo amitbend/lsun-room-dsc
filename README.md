@@ -9,7 +9,7 @@
 ## [Original readme](https://github.com/leVirve/lsun-room)
 ## [Original paper]()
 ## Usage
-- Install libraries according to [requirements](https://github.com/shuuchen/lsun-room-dsc/blob/master/requirements.txt)
+- Install libraries according to [requirements](https://github.com/shuuchen/lsun-room-dsc/blob/master/requirements.txt).
 - Download dataset from http://lsun.cs.princeton.edu/2015.html#layout and put them in following folders.
 - Datasets preparation
 
