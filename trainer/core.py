@@ -2,12 +2,30 @@ import logging
 from functools import partial
 
 import torch
+from torch.autograd import Variable
+import torch.nn as nn
 import onegan
 import torch.nn.functional as F
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from onegan.estimator import OneEstimator
-from onegan.utils import to_var
+#from onegan.utils import to_var
 
+cuda_available = torch.cuda.is_available()
+
+def to_var(x, **kwargs):
+    var = Variable(x, **kwargs)
+    if cuda_available:
+        return var.cuda()
+    return var
+
+class CrossEntropyLoss2d(nn.Module):
+
+    def __init__(self, weight=None, size_average=True, ignore_index=255):
+        super().__init__()
+        self.nll_loss = nn.NLLLoss2d(weight, size_average, ignore_index)
+
+    def forward(self, outputs, targets):
+        return self.nll_loss(F.log_softmax(outputs, dim=1), targets)
 
 def training_estimator(model, optimizer, args):
 
@@ -51,6 +69,7 @@ def training_estimator(model, optimizer, args):
     def _closure(model, data, volatile=False):
         source = to_var(data['image'], volatile=volatile)
         target = to_var(data['label'], volatile=volatile)
+
         score, pred_type = model(source)
         _, output = torch.max(score, 1)
 
@@ -62,8 +81,8 @@ def training_estimator(model, optimizer, args):
 
         viz_results = {
             'input': source.data,
-            'output': output.data.float(),
-            'target': target.data.float()}
+            'output': output.data.float()[:, None],#dimension expansion by dsc
+            'target': target.data.float()[:, None]}
         tensorboard.image(
             viz_results,
             epoch=estimator.state['epoch'], prefix='val_' if volatile else 'train_')
@@ -72,14 +91,14 @@ def training_estimator(model, optimizer, args):
 
     log = logging.getLogger(f'room.{args.name}')
 
-    ce_loss = onegan.losses.CrossEntropyLoss2d()
-    focal_loss = onegan.losses.FocalLoss2d(gamma=args.focal_gamma)
+    ce_loss = CrossEntropyLoss2d()
+    focal_loss = onegan.loss.FocalLoss2d(gamma=args.focal_gamma)
 
     sobel_y_conv2d = onegan.ops.VisionConv2d('sobel_vertical', padding=2, dilation=2, name='Sobel-Y')
     sobel_x_conv2d = onegan.ops.VisionConv2d('sobel_horizontal', padding=2, dilation=2, name='Sobel-X')
 
     scheduler = ReduceLROnPlateau(optimizer, patience=2, mode='min', factor=0.5, min_lr=1e-8, verbose=True)
-    checkpoint = onegan.extension.Checkpoint(name=args.name, save_epochs=5)
+    checkpoint = onegan.extension.Checkpoint(name=args.name, save_interval=1)
     tensorboard = onegan.extension.TensorBoardLogger(name=args.name, max_num_images=30)
     metric = onegan.metrics.semantic_segmentation.Metric(num_class=args.num_class, only_scalar=True)
     score_metric = onegan.metrics.semantic_segmentation.max_bipartite_matching_score
@@ -91,7 +110,7 @@ def training_estimator(model, optimizer, args):
     log.info('Build training esimator')
     estimator = OneEstimator(
         model, optimizer,
-        lr_scheduler=scheduler, logger=tensorboard, saver=checkpoint, name=args.name)
+        lr_scheduler=scheduler, logger=tensorboard, saver=checkpoint)
 
     return partial(estimator.run, update_fn=partial(_closure), inference_fn=partial(_closure, volatile=True))
 
@@ -134,7 +153,7 @@ def evaluation_estimator(model, args):
 
     log.info('Build evaluation esimator')
     model = checkpoint.load(args.pretrain_path, model=model)
-    estimator = OneEstimator(model, name=args.name)
+    estimator = OneEstimator(model)
 
     return partial(estimator.evaluate, inference_fn=partial(_closure, volatile=True))
 
@@ -166,7 +185,7 @@ def weights_estimator(model, args):
     score_metric = onegan.metrics.semantic_segmentation.max_bipartite_matching_score
 
     log.info('Build weight-searching esimator')
-    estimator = OneEstimator(model, name=args.name)
-    ckpt = onegan.extension.Checkpoint(name=args.name, save_epochs=5)
+    estimator = OneEstimator(model)
+    ckpt = onegan.extension.Checkpoint(name=args.name, save_interval=1)
 
     return searching
