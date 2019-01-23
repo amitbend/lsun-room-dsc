@@ -5,27 +5,23 @@
 ## [Original readme](https://github.com/leVirve/lsun-room)
 ## [Original paper]()
 ## Usage
-
+- Download dataset from http://lsun.cs.princeton.edu/2015.html#layout and put them in following folders.
 - Dataset
 
   - Put `LSUN Room Layout Dataset` in folder `../data/lsun_room` relative to this project.
     - `images/`: RGB color image `*.jpg` of indoor room scene
     - `layout_seg/`: layout ground truth `*.mat` of indoor room scene
     - `layout_seg_images/`: generated layout ground truth `*.png` of indoor room scene
-
-  - Put `SUN RGB-D Dataset` in folder `../data/sun_rgbd` relative to this project.
-    - `images/`: RGB color image `*.jpg` in `train` and `test` respectly.
-    - `labels/`: layout ground truth `*.png` in `train` and `test` respectly.
-
-- Toolkit
-
-  - Put `LSUN Room Layout Dataset` toolkit in folder `../lsun_toolkit`
-    - Integrated scripts (TBD)
-
+  - Run the following to prepare train/evaluation data.
+    ```bash
+    python re_label.py
+    ```
+  
 - Training
-
+  - The trained model will be saved to folder ./exp/checkpoints/
+  
   ```bash
-  python main.py
+  python main.py --phase train --name train
 
   Usage: main.py [OPTIONS]
 
@@ -42,10 +38,11 @@
     --resume PATH
   ```
 
-- Demo
-
+- Prediction
+  - Specify the weight path of a trained model.
+  - The weight path should be a file named as net-xx.pt
   ```bash
-  python demo.py
+  python demo.py --weight [weight_path]
 
   Usage: demo.py [OPTIONS]
 
@@ -57,18 +54,4 @@
 
   ```
 
-- Evaluate with offical Matlab toolkit
-
-  ```bash
-  matlab -nojvm -nodisplay -nosplash -r "demo('$EXPERIMENT_OUTPUT_FODLER'); exit;"
-  ```
-
-## Tools
-
-- Re-label
-
-  - Output layout image (range from 1-5)
-
-  ```bash
-  python script/re_label.py
-  ```
+MIT License
