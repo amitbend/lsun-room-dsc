@@ -2,48 +2,31 @@
 
 ![one_lsun_result_banner](./doc/banner.png)
 
+## TODO
+- Upload trained model.
+- Upload test results.
 
-## Citation
-```
-@inproceedings{lin2018layoutestimation,
-    Author = {Hung Jin Lin and Sheng-Wei Huang and Shang-Hong Lai and Chen-Kuo Chiang},
-    Title = {Indoor Scene Layout Estimation from a Single Image},
-    Booktitle = {2018 24th International Conference on Pattern Recognition (ICPR)},
-    Year = {2018}
-}
-```
-
-**The code is under evaluation and update TBD. Deprecated information below.**
-
-
-## Prerequisite
-
-- Python 3.6+
-- [OneGAN](https://github.com/leVirve/OneGAN) >= `0.3.0`
-- `scikit-image` and `click`, `tqdm`
-
+## [Original readme](https://github.com/leVirve/lsun-room)
+## [Original paper]()
 ## Usage
-
-- Dataset
+- Download dataset from http://lsun.cs.princeton.edu/2015.html#layout and put them in following folders.
+- Datasets preparation
 
   - Put `LSUN Room Layout Dataset` in folder `../data/lsun_room` relative to this project.
     - `images/`: RGB color image `*.jpg` of indoor room scene
     - `layout_seg/`: layout ground truth `*.mat` of indoor room scene
     - `layout_seg_images/`: generated layout ground truth `*.png` of indoor room scene
-
-  - Put `SUN RGB-D Dataset` in folder `../data/sun_rgbd` relative to this project.
-    - `images/`: RGB color image `*.jpg` in `train` and `test` respectly.
-    - `labels/`: layout ground truth `*.png` in `train` and `test` respectly.
-
-- Toolkit
-
-  - Put `LSUN Room Layout Dataset` toolkit in folder `../lsun_toolkit`
-    - Integrated scripts (TBD)
-
+  - Run the following to prepare train/evaluation datasets.
+    ```bash
+    python re_label.py
+    ```
+  
 - Training
-
+  - The trained model will be saved to folder ./exp/checkpoints/
+  - You can modify config.yml to play with hyperparameters for training.
+  
   ```bash
-  python main.py
+  python main.py --phase train --name train
 
   Usage: main.py [OPTIONS]
 
@@ -60,33 +43,23 @@
     --resume PATH
   ```
 
-- Demo
-
+- Prediction
+  - Specify the weight path of a trained model.
+  - The weight path should be a file named as net-xx.pt
+  - --input_path/--output_path point to the folders of input/output images.
+  
   ```bash
-  python demo.py
+  python demo.py --weight [weight_path] --input_path [input_image_dir] --output_path [output_image_dir]
 
   Usage: demo.py [OPTIONS]
 
   Options:
-    --device INTEGER
-    --video TEXT
-    --weight TEXT
-    --input_size <INTEGER INTEGER>.
+    --input_path PATH
+    --output_path PATH
+    --weight PATH
+    --input_size <INTEGER INTEGER>...
+    --help                          Show this message and exit.
 
   ```
 
-- Evaluate with offical Matlab toolkit
-
-  ```bash
-  matlab -nojvm -nodisplay -nosplash -r "demo('$EXPERIMENT_OUTPUT_FODLER'); exit;"
-  ```
-
-## Tools
-
-- Re-label
-
-  - Output layout image (range from 1-5)
-
-  ```bash
-  python script/re_label.py
-  ```
+MIT License
