@@ -42,7 +42,7 @@
 - Prediction
   - Specify the weight path of a trained model.
   - The weight path should be a file named as net-xx.pt
-  - --input_path/--output_path point to the folders of input/output images
+  - --input_path/--output_path point to the folders of input/output images.
   
   ```bash
   python demo.py --weight [weight_path] --input_path [input_image_dir] --output_path [output_image_dir]
