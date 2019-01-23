@@ -62,13 +62,15 @@ def main(args):
 
     if args.phase == 'train':
         training_estimator = core.training_estimator(
-            torch.nn.DataParallel(model.cuda()),
+            #torch.nn.DataParallel(model.cuda()),
+            model.cuda(),#dsc
             create_optim(args, model, optim=args.optim), args)
         training_estimator(train_loader, val_loader, epochs=args.epoch)
 
     if args.phase in ['eval', 'eval_search']:
         core_fn = core.evaluation_estimator if args.phase == 'eval' else core.weights_estimator
-        evaluate_estimator = core_fn(torch.nn.DataParallel(model.cuda()), args)
+        #evaluate_estimator = core_fn(torch.nn.DataParallel(model.cuda()), args)
+        evaluate_estimator = core_fn(model.cuda(), args) # dsc
         evaluate_estimator(val_loader)
 
 

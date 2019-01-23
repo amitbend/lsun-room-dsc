@@ -4,7 +4,7 @@ import numpy as np
 import scipy.io as sio
 
 import cv2
-from lsun_room.label import mapping_func
+from lib.lsun_room_api.lsun_room.label import mapping_func
 
 
 def load_mat(path):
@@ -52,7 +52,7 @@ class Item():
         layout = np.zeros_like(old_layout)
         for new_label, point in mapping:
             old_label = old_layout[point[1], point[0]]
-            layout[old_layout == old_label] = new_label
+            layout[old_layout == old_label] = new_label.value
         return layout
 
     def save_layout(self, visualization=False):

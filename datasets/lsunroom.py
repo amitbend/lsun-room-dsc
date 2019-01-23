@@ -2,15 +2,16 @@ import glob
 import os
 import pathlib
 import random
+import logging
 
 import numpy as np
 import torch
 import torchvision.transforms as T
 from PIL import Image
 
-from lsun_room.label import Layout
-from lsun_room.loader import LsunRoomDataset as _BaseDataset
-from lsun_room.loader import get_meta
+from lib.lsun_room_api.lsun_room.label import Layout
+from lib.lsun_room_api.lsun_room.loader import LsunRoomDataset as _BaseDataset
+from lib.lsun_room_api.lsun_room.loader import get_meta
 
 
 class LsunRoomDataset(_BaseDataset):
@@ -27,6 +28,13 @@ class LsunRoomDataset(_BaseDataset):
             T.ToTensor(),
             T.Normalize(mean=[.5, .5, .5], std=[.5, .5, .5]),
         ])
+
+    @property
+    def logger(self):
+        """ :Logger: logger for specific succeeding class """
+        if not hasattr(self, '_logger'):
+            self._logger = logging.getLogger(type(self).__name__)
+        return self._logger
 
     def collect_meta(self, root, phase):
         ''' metadata fold1: original dataset '''

@@ -2,14 +2,58 @@ import os
 
 import torch
 import scipy.io
-from onegan.io.loader import load_image, BaseDataset
-from onegan.io.transform import SegmentationPair
+from onegan.io.loader import BaseDataset
+from onegan.io.functional import load_image
 
-from lsun_room.edge import gen_edge_map, gen_corner_map
 
+from lib.lsun_room_api.lsun_room.edge import gen_edge_map, gen_corner_map
+
+class SegmentationPair():
+
+    def __init__(self,
+                 target_size=None,
+                 final_transform=False,
+                 random_flip=False, random_crop=False, color_jiiter=False):
+        self.target_size = target_size
+        self.final_transform = final_transform
+        self.random_flip = random_flip
+        self.random_crop = random_crop
+        self.color_jiiter = color_jiiter
+
+    def __call__(self, image, segmentation, random=False) -> tuple:
+        image = image.convert('RGB')
+        segment = segmentation.convert('L')
+
+        image, segment = self.tf_random_flip(image, segment)
+        image, segment = self.tf_random_crop(image, segment)
+
+        image = F.resize(image, self.target_size, interpolation=Image.BILINEAR)
+        segment = F.resize(segment, self.target_size, interpolation=Image.NEAREST)
+
+        return self._transform(image, segment)
+
+    def _transform(self, image, segmentation) -> tuple:
+        if self.final_transform:
+            image = T.Normalize(mean=[.5, .5, .5], std=[.5, .5, .5])(F.to_tensor(image))
+            segmentation = torch.from_numpy(np.array(segmentation) - 1).long()  # make 0 into 255 as ignore index
+        return image, segmentation
+
+    def tf_random_flip(self, image, segment):
+        if self.random_flip and random.random() >= 0.5:
+            image = F.hflip(image)
+            segment = F.hflip(segment)
+        return image, segment
+
+    def tf_random_crop(self, image, segment):
+        if self.random_crop:
+            i, j, h, w = F.RandomResizedCrop.get_params(image)
+            image = F.crop(image, i, j, h, w)
+            segment = F.crop(segment, i, j, h, w)
+        return image, segment
 
 def get_meta(dataset_root, phase):
     phase = {'train': 'training', 'val': 'validation', 'test': 'testing'}[phase]
+    #print('-------------------------------', phase, dataset_root)
     mat = scipy.io.loadmat(os.path.join(dataset_root, f'{phase}.mat'))[phase][0]
     return [dict(name=m[0][0], scene=m[1][0], type=m[2][0][0], points=m[3], resolution=m[4][0]) for m in mat]
 
