@@ -48,7 +48,7 @@
     --lr LR
     --worker WORKER
     --name NAME           experiment name
-    --folder FOLDER       where\'s the dataset
+    --folder FOLDER       where is the dataset
     --dataset {lsunroom,hedau,sunrgbd}
     --phase {train,eval,eval_search}
     --image_size IMAGE_SIZE
