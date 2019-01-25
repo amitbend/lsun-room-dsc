@@ -44,8 +44,8 @@ class Predictor:
             _, output = torch.max(score, 1)
             image = (batched_img / 2 + .5)
             layout = self.colorizer.apply(output.data.cpu())
-            return image * .6 + layout * .4
-            #return layout
+            #return image * .6 + layout * .4
+            return layout
 
         img = Image.fromarray(raw)
         batched_img = self.transform(img).unsqueeze(0)

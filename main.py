@@ -77,7 +77,7 @@ def main(args):
 if __name__ == '__main__':
     parser = onegan.option.Parser(description='Indoor room corner detection', config='./config.yml')
     parser.add_argument('--name', help='experiment name')
-    parser.add_argument('--folder', help='where\'s the dataset')
+    parser.add_argument('--folder', help='where is the dataset')
     parser.add_argument('--dataset', default='lsunroom', choices=['lsunroom', 'hedau', 'sunrgbd'])
     parser.add_argument('--phase', default='eval', choices=['train', 'eval', 'eval_search'])
 
