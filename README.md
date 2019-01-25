@@ -7,7 +7,7 @@
 - Upload test results.
 
 ## [Original readme](https://github.com/leVirve/lsun-room)
-## [Original paper]()
+## [Original paper](https://github.com/shuuchen/lsun-room-dsc/blob/master/layout_lin.pdf)
 ## Usage
 - Install libraries according to [requirements](https://github.com/shuuchen/lsun-room-dsc/blob/master/requirements.txt).
 - Download dataset from http://lsun.cs.princeton.edu/2015.html#layout and put them in following folders.
@@ -29,19 +29,41 @@
   ```bash
   python main.py --phase train --name train
 
-  Usage: main.py [OPTIONS]
+  usage: main.py [-h] [--epoch EPOCH] [--batch_size BATCH_SIZE] [--lr LR]
+                 [--worker WORKER] [--name NAME] [--folder FOLDER]
+                 [--dataset {lsunroom,hedau,sunrgbd}]
+                 [--phase {train,eval,eval_search}] [--image_size IMAGE_SIZE]
+                 [--use_edge] [--use_corner] [--datafold DATAFOLD]
+                 [--tri_visual] [--arch ARCH] [--optim OPTIM] [--disjoint_class]
+                 [--pretrain_path PRETRAIN_PATH] [--l1_factor L1_FACTOR]
+                 [--l2_factor L2_FACTOR] [--edge_factor EDGE_FACTOR]
+                 [--focal_gamma FOCAL_GAMMA]
 
-  Options:
-    --name TEXT
-    --dataset [lsun_room | others]
-    --dataset_root TEXT
-    --log_dir TEXT
-    --image_size <INTEGER INTEGER>
-    --epochs INTEGER
-    --batch_size INTEGER
-    --workers INTEGER
-    --l1_weight FLOAT
-    --resume PATH
+  Indoor room corner detection
+
+  optional arguments:
+    -h, --help            show this help message and exit
+    --epoch EPOCH
+    --batch_size BATCH_SIZE
+    --lr LR
+    --worker WORKER
+    --name NAME           experiment name
+    --folder FOLDER       where is the dataset
+    --dataset {lsunroom,hedau,sunrgbd}
+    --phase {train,eval,eval_search}
+    --image_size IMAGE_SIZE
+    --use_edge
+    --use_corner
+    --datafold DATAFOLD
+    --tri_visual
+    --arch ARCH
+    --optim OPTIM
+    --disjoint_class
+    --pretrain_path PRETRAIN_PATH
+    --l1_factor L1_FACTOR
+    --l2_factor L2_FACTOR
+    --edge_factor EDGE_FACTOR
+    --focal_gamma FOCAL_GAMMA
   ```
 
 - Prediction
