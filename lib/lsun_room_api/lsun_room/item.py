@@ -81,6 +81,7 @@ class DataItems():
 
         path = os.path.join(self.root, '%s.mat' % phase_map[phase])
         meta = load_mat(path)[0]
+        #print('-------------item------------------', meta[0][4])
         return [
             Item(
                 name=m[0][0], scene=m[1][0], type=m[2][0][0],

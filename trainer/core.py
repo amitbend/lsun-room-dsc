@@ -54,7 +54,7 @@ def training_estimator(model, optimizer, args):
         ''' layout edge constraint loss '''
         if args.edge_factor:
             edge_map = layout_gradient(prediction)
-            edge_loss = F.binary_cross_entropy(edge_map, to_var(data['edge']))
+            edge_loss = F.binary_cross_entropy(edge_map, to_var(data['edge']).float())
             terms['loss/loss'] += edge_loss * args.edge_factor
             terms['loss/edge'] = edge_loss
 

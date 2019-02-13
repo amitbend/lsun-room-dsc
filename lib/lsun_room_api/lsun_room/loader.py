@@ -53,8 +53,8 @@ class SegmentationPair():
 
 def get_meta(dataset_root, phase):
     phase = {'train': 'training', 'val': 'validation', 'test': 'testing'}[phase]
-    #print('-------------------------------', phase, dataset_root)
     mat = scipy.io.loadmat(os.path.join(dataset_root, f'{phase}.mat'))[phase][0]
+    #print('-------------loader------------------', mat[0][4])
     return [dict(name=m[0][0], scene=m[1][0], type=m[2][0][0], points=m[3], resolution=m[4][0]) for m in mat]
 
 

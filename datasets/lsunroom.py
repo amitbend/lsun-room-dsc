@@ -22,7 +22,6 @@ class LsunRoomDataset(_BaseDataset):
         self.root = pathlib.Path(args.folder)
         self.target_size = (args.image_size, args.image_size)
         self.meta = self.collect_meta(self.root, phase=phase)
-
         self.color_jitter = T.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2)
         self.image_transform = T.Compose([
             T.ToTensor(),
@@ -41,8 +40,11 @@ class LsunRoomDataset(_BaseDataset):
         meta = [
             {'image_path': root / self.image_folder / f'{e["name"]}.jpg',
              'layout_path': root / self.layout_folder / f'{e["name"]}.png',
-             'name': e['name'] + '.png', 'type': e['type']}
-            for e in get_meta(dataset_root=root, phase=phase)
+             'name': e['name'] + '.png', 
+             'type': e['type'],
+             'resolution': e['resolution'],
+             'points': e['points']}
+            for e in get_meta(dataset_root=root, phase=phase) # dict(name=m[0][0], scene=m[1][0], type=m[2][0][0], points=m[3], resolution=m[4][0]) for m in mat
         ]
         counter = [0 for i in range(11)]
         for m in meta:
