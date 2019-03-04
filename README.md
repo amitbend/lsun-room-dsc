@@ -8,6 +8,13 @@
 
 ## [Original readme](https://github.com/leVirve/lsun-room)
 ## [Original paper](https://github.com/shuuchen/lsun-room-dsc/blob/master/layout_lin.pdf)
+
+## Current best training practice
+- Command
+  ```bash
+  python main.py --phase train --name train --l2_factor 5  --edge_factor 50 --type_λ [not decided]
+  ```
+
 ## Usage
 - Install libraries according to [requirements](https://github.com/shuuchen/lsun-room-dsc/blob/master/requirements.txt).
 - Download dataset from http://lsun.cs.princeton.edu/2015.html#layout and put them in following folders.
