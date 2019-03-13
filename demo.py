@@ -37,21 +37,26 @@ class Predictor:
         return model.cuda()
 
     @onegan.utils.timeit
-    def process(self, raw):
+    def process(self, raw, f):
 
         def _batched_process(batched_img):
-            score, _ = self.model(onegan.utils.to_var(batched_img))
+            score, pred_type = self.model(onegan.utils.to_var(batched_img))
+            pred_type = torch.argmax(pred_type, 1)
+            '''
+            if pred_type.item() == 0:
+                print('-------------(%s: %d)--------------' % (f, pred_type.item()))
+            '''
             _, output = torch.max(score, 1)
             image = (batched_img / 2 + .5)
             layout = self.colorizer.apply(output.data.cpu())
             #return image * .6 + layout * .4
-            return layout
+            return layout, pred_type.item()
 
         img = Image.fromarray(raw)
         batched_img = self.transform(img).unsqueeze(0)
-        canvas = _batched_process(batched_img)
+        canvas, t = _batched_process(batched_img)
         result = canvas.squeeze().permute(1, 2, 0).numpy()
-        return cv2.resize(result, (raw.shape[1], raw.shape[0]))
+        return cv2.resize(result, (raw.shape[1], raw.shape[0])), t
 
 
 @click.command()
@@ -65,9 +70,15 @@ def main(input_path, output_path, weight, input_size):
 
     input_path = Path(input_path)
     output_path = Path(output_path)
-    for f in os.listdir(input_path):
-        output = demo.process(cv2.imread(str(input_path / f))[:, :, ::-1])
-        plt.imsave(output_path / f, output)
+    with open('./pred_type_0.txt', 'a') as type_f:
+        for f in os.listdir(input_path):
+            try:
+                output, t = demo.process(cv2.imread(str(input_path / f))[:, :, ::-1], f)
+                if t == 0:
+                    plt.imsave(output_path / f, output)
+                    type_f.write('%s\n' % f)
+            except:
+                print('exp: ', f)
 
 if __name__ == '__main__':
     main()

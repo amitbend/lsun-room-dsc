@@ -6,7 +6,7 @@ import click
 from lib.lsun_room_api.lsun_room.item import DataItems
 
 def worker(item):
-    item.remap_layout()
+    #item.remap_layout()
     item.save_layout()
 
 

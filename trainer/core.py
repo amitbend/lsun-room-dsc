@@ -8,7 +8,6 @@ import onegan
 import torch.nn.functional as F
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from onegan.estimator import OneEstimator
-#from onegan.utils import to_var
 
 cuda_available = torch.cuda.is_available()
 
@@ -57,13 +56,16 @@ def training_estimator(model, optimizer, args):
             edge_loss = F.binary_cross_entropy(edge_map, to_var(data['edge']).float())
             terms['loss/loss'] += edge_loss * args.edge_factor
             terms['loss/edge'] = edge_loss
-
         ''' room type ce loss '''
-        # if args.type_λ:
-        #     type_loss = F.cross_entropy(pred_type.squeeze(), to_var(data['type'].long()))
-        #     terms['loss/loss'] += type_loss * args.type_λ
-        #     terms['loss/room_type'] = type_loss
-
+        if args.type_λ:
+            type_loss = F.cross_entropy(pred_type.squeeze(), to_var(data['type'].long()))
+            #print(pred_type.squeeze(), '>---------------------<')
+            #print(type_loss, '>-----------loss----------<')
+            terms['loss/loss'] += type_loss * args.type_λ
+            terms['loss/room_type'] = type_loss
+        #print('-----------------')
+        #print(data)
+        #print('-----------------')
         return terms
 
     def _closure(model, data, volatile=False):
@@ -71,6 +73,7 @@ def training_estimator(model, optimizer, args):
         target = to_var(data['label'], volatile=volatile)
 
         score, pred_type = model(source)
+        #print(pred_type, '>---------------------<')
         _, output = torch.max(score, 1)
 
         loss = objective(score, output, pred_type, target, data)

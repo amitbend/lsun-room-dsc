@@ -47,7 +47,7 @@ class Item():
 
     def remap_layout(self, verbose=False):
         mapping = mapping_func(self.type)(self)
-
+        #print('----------%s----------' % self.layout_mat_path)
         old_layout = load_mat(self.layout_mat_path)
         layout = np.zeros_like(old_layout)
         for new_label, point in mapping:
@@ -56,7 +56,8 @@ class Item():
         return layout
 
     def save_layout(self, visualization=False):
-        save_image(self.layout_path, self.layout)
+        #save_image(self.layout_path, self.layout)
+        save_image(self.layout_path, self.remap_layout())
 
     def __str__(self):
         return '<DataItem: %s>' % self.name

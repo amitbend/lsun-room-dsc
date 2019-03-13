@@ -1,3 +1,4 @@
+import math
 import torch.nn as nn
 import torch.nn.functional as F
 import torchvision.models as models
@@ -38,10 +39,14 @@ class PlanarSegHead(nn.Module):
         self.dec1 = transposed_conv(bottleneck_channels, bottleneck_channels, stride=2)
         self.dec2 = transposed_conv(bottleneck_channels, bottleneck_channels, stride=2)
         self.dec3 = transposed_conv(bottleneck_channels, bottleneck_channels, stride=16)
-
+        
+        # layout image segmentation branch
         self.fc_stage2 = nn.Conv2d(bottleneck_channels, num_classes, kernel_size=1, stride=1, bias=False)
 
-        import math
+        # layout type classification branch dsc
+        self.avg_pool = nn.AvgPool2d(8)
+        self.fc = nn.Linear(37*40*40, 11)
+
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
                 n = m.kernel_size[0] * m.kernel_size[1] * m.out_channels
@@ -67,9 +72,13 @@ class PlanarSegHead(nn.Module):
 
         d5_b = self.clf3(e5)       # 5 x 20 x 20
         d0 = self.dec3(d5_b + d5)  # 5 x 320 x 320
-
+      
+        d1 = self.avg_pool(d0)
+        t = self.fc(d1.view(d1.size(0), -1)) # dsc
+        #print('>>>>>>>>>>', t)
         d = self.fc_stage2(d0)
-        return d
+        
+        return d, t
 
 
 class ResPlanarSeg(nn.Module):
@@ -94,4 +103,4 @@ class ResPlanarSeg(nn.Module):
         e6 = self.resnet.layer4(e5)    # 2048 x 10 x 10
         e7 = self.resnet.maxpool(e6)   # 2048 x 5 x 5
 
-        return self.planar_seg(e7, e6, e5), None
+        return self.planar_seg(e7, e6, e5)#, None

@@ -100,7 +100,8 @@ if __name__ == '__main__':
     parser.add_argument('--l1_factor', type=float, default=0.0)
     parser.add_argument('--l2_factor', type=float, default=0.0)
     parser.add_argument('--edge_factor', type=float, default=0.0)
-    parser.add_argument('--focal_gamma', type=float, default=0)
+    parser.add_argument('--focal_gamma', type=float, default=0.0)
+    parser.add_argument('--type_λ', type=float, default=0.0)
     args = parser.parse()
 
     logging.basicConfig(level=logging.INFO,
