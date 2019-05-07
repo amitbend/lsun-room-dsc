@@ -3,16 +3,19 @@
 ![one_lsun_result_banner](./doc/banner.png)
 
 ## TODO
-- Upload trained model.
+- ~~Upload trained model.
 - Upload test results.
 
 ## [Original readme](https://github.com/leVirve/lsun-room)
 ## [Original paper](https://github.com/shuuchen/lsun-room-dsc/blob/master/layout_lin.pdf)
 
+## Update (May 7th, 2019)
+- A trained model and LSUN dataset can be downloaded from my [google drive page](https://drive.google.com/drive/u/0/folders/1qfZkP7yRGUpmS1dP9mcuRVIlyCygeb1Z) (access permission required).
+
 ## Current best training practice
 - Command
   ```bash
-  python main.py --phase train --name train --l2_factor 5  --edge_factor 50 --type_λ [not decided]
+  python main.py --phase train --name train --l2_factor 5  --edge_factor 50
   ```
 
 ## Usage
