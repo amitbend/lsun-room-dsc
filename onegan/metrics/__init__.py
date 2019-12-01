@@ -8,8 +8,8 @@ from math import log10
 import torch.nn.functional as F
 import numpy as np
 
-from onegan.metrics import semantic_segmentation  # noqa
-from onegan.visualizer.image import img_normalize
+from ..metrics import semantic_segmentation  # noqa
+from ..visualizer.image import img_normalize
 
 
 def psnr(output, target, img_range=None):

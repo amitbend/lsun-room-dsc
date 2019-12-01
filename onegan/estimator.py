@@ -7,8 +7,8 @@ import logging
 
 import tqdm
 
-import onegan.loss as losses
-from onegan.extension import History, TensorBoardLogger, Checkpoint, GANCheckpoint
+from . import loss as losses
+from .extension import History, TensorBoardLogger, Checkpoint, GANCheckpoint
 
 
 def to_var(x, **kwargs):

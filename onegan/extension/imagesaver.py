@@ -8,7 +8,7 @@ import pathlib
 
 import scipy.misc
 
-from onegan.visualizer.image import img_normalize
+from ..visualizer.image import img_normalize
 from .base import Extension, unique_experiment_name
 
 

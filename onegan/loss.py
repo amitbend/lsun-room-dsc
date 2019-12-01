@@ -8,8 +8,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch.autograd import grad
 
-import onegan
-
+from .. import onegan
 
 def adversarial_ce_loss(x, value: float):
     ''' x: output tensor of discriminator

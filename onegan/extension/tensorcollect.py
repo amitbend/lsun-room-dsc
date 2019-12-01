@@ -7,7 +7,7 @@ from collections import defaultdict
 
 import torch
 
-from onegan.io import save_mat
+from ..io import save_mat
 from .base import Extension
 
 
