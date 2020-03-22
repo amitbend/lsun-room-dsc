@@ -12,7 +12,7 @@ def init_weights(net, init_method='normal', gain=1):
 
     def init_module_weight(m):
         module_name = m.__class__.__name__
-        module_name = module_name.replace('1d', '').replace('2d', '').replace('3d', '')
+        module_name = module_name.replace('1d', '').replace('2d', '').replace('to3droom', '')
 
         if module_name == 'BatchNorm':
             nn.init.uniform_(m.weight.data, 1.0, 0.02)
